@@ -3,73 +3,66 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
   def message(message)
-    # store_message(message['text'])
+    username = message['chat']['username']
+    message = parse_message(message['text'])
+
+    user_params = { username: }
+    user_exists = User.find_by_username(username)
+
+    unless user_exists
+      user = User.new(user_params)
+      if user.save
+        'You succesfully registred'
+      else
+        user.errors.messages
+      end
+    end
+    user_exists = User.find_by_username(username)
+    expense = Expense.new(message)
+    expense.user_id = user_exists.id
+    result_message = if expense.save
+                       'Expense was created succesfully'
+                     else
+                       'Expanse was not created'
+                     end
+
+    respond_with :message, text: result_message
   end
 
-  def menu
-    respond_with :message, text: t('.prompt'), reply_markup: {
-      inline_keyboard: [
-        [
-          { text: t('.alert'), callback_data: 'alert' },
-          { text: t('.no_alert'), callback_data: 'no_alert' }
-        ],
-        [{ text: t('.repo'), url: 'https://github.com/telegram-bot-rb/telegram-bot' }]
-      ]
-    }
-  end
-
-  # For the following types of updates commonly used params are passed as arguments,
-  # full payload object is available with `payload` instance method.
-  #
-  #   message(payload)
-  #   inline_query(query, offset)
-  #   chosen_inline_result(result_id, query)
-  #   callback_query(data)
-
-  # Define public methods ending with `!` to handle commands.
-  # Command arguments will be parsed and passed to the method.
-  # Be sure to use splat args and default values to not get errors when
-  # someone passed more or less arguments in the message.
   def start!(_word = nil, *_other_words)
-    # do_smth_with(word)
-
-    # full message object is also available via `payload` instance method:
-    # process_raw_message(payload['text'])
-
-    # There are `chat` & `from` shortcut methods.
-    # For callback queries `chat` is taken from `message` when it's available.
-    response = from ? "Hello #{from['username']}!" : 'Hi there!'
-
-    # There is `respond_with` helper to set `chat_id` from received message:
-    respond_with :message, text: response
-
-    # `reply_with` also sets `reply_to_message_id`:
-    reply_with :photo, photo: File.open('party.jpg')
-  end
-
-  def help!
-    respond_with :message, text: 'menu', reply_markup: {
+    reply_with :message, text: 'Welcome to Expenses bot, please select item...', reply_markup: {
       inline_keyboard: [
         [
-          { text: 'log expenses', callback_data: 'alert' },
-          { text: 'stats', callback_data: 'no_alert' }
-        ],
-        [{ text: 'try', url: 'https://github.com/telegram-bot-rb/telegram-bot' }]
+          { text: 'Registration', callback_data: 'registration' },
+          { text: 'Log expenses', callback_data: 'log_expenses' },
+          { text: 'Statistics', callback_data: 'statistics' }
+        ]
       ]
     }
+  end
+
+  def callback_query(data)
+    case data
+    when 'log_expenses'
+      reply_with :message, text: 'Enter category of your expense and amount'
+    when 'registration'
+      reply_with :message, text: 'Welcome'
+    when 'statistics'
+      username = update['callback_query']['message']['chat']['username']
+      current_user = User.find_by_username(username)
+      expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
+
+      reply_with :message, text: expenses
+    else
+      reply_with :message, text: 'Not found command'
+    end
   end
 
   private
 
-  def with_locale(&block)
-    I18n.with_locale(locale_for_update, &block)
-  end
-
-  def locale_for_update
-    if from
-      # locale for user
-    elsif chat
-      # locale for chat
-    end
+  def parse_message(message)
+    amount = message.tr('^0-9', '').strip
+    category = message.tr('0-9', '').strip
+    parsed_message = { category:, amount: }
   end
 end
