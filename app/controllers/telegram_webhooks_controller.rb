@@ -6,17 +6,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # Define method with the same name to handle this type of update.
   def message(message)
     username = user_name message
-
     if user_exist username
-      message = parse_msg(message['text'])
-      expense = Expense.new(message)
+      expense = Expense.new(parse_message(message['text']))
       expense.user_id = current_user(username).id
       result_message = if expense.save
                          'Expense was created succesfully'
                        else
                          'Expanse was not created'
                        end
-
       respond_with :message, text: result_message
     else
       respond_with :message, text: 'Sorry, seems that you have to register first'
