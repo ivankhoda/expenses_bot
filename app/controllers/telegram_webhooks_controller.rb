@@ -8,7 +8,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     username = user_name message
     if user_exist username
       create_expense(parse_message(message['text']), current_user(username).id)
-
     else
       respond_with :message, text: 'Sorry, seems that you have to register first'
     end
@@ -27,20 +26,21 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def callback_query(data)
+    @username = user_name update
     case data
     when 'log_expenses'
       reply_with :message, text: 'Enter category of your expense and amount'
     when 'registration'
-      username = user_name update
-      if user_exist username
+
+      if user_exist @username
         reply_with :message, text: 'You already registered in bot'
       else
-        create_user username
+        create_user @username
       end
 
     when 'statistics'
-      username = user_name update
-      current_user = User.find_by_username(username)
+
+      current_user = User.find_by_username(@username)
       expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
       reply_with :message, text: expenses
     else
