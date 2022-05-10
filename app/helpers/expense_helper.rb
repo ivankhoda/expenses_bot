@@ -21,6 +21,12 @@ module ExpenseHelper
     respond_with :message, text: result_message
   end
 
+  def find_all_expenses_for_user(username)
+    current_user = User.find_by_username(username)
+    expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
+    reply_with :message, text: expenses
+  end
+
   def validate
     puts params
   end

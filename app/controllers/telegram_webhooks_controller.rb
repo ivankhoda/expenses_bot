@@ -1,6 +1,8 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include UserHelper
   include ExpenseHelper
+  include CallbackQueryHelper
+
   # Every update has one of: message, inline_query, chosen_inline_result,
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
@@ -26,25 +28,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def callback_query(data)
-    @username = user_name update
-    case data
-    when 'log_expenses'
-      reply_with :message, text: 'Enter category of your expense and amount'
-    when 'registration'
-
-      if user_exist @username
-        reply_with :message, text: 'You already registered in bot'
-      else
-        create_user @username
-      end
-
-    when 'statistics'
-
-      current_user = User.find_by_username(@username)
-      expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
-      reply_with :message, text: expenses
-    else
-      reply_with :message, text: 'Not found command'
-    end
+    username = user_name update
+    callback_query_answer_handler(data, username)
   end
 end
