@@ -84,4 +84,4 @@ production:
   <<: *default
   database: expenses_bot_production
   username: expenses_bot
-  password: <%= ENV["EXPENSES_BOT_DATABASE_PASSWORD"] %>
+  password:
