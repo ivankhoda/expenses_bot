@@ -2,11 +2,15 @@ module ExpenseHelper
   def parse_message(message)
     amount = message.tr('^0-9', '').strip
     category = message.tr('0-9', '').strip
-    category.chars[0].upcase!
     if !amount.blank? && !category.blank?
+      category.chars[0].upcase!
       { category:, amount: }
     else
-      'Some params was blank'
+      # begin
+      #   raise StandardError, 'Please enter category and amount'
+      #   resque
+      respond_with :message, text: 'Please enter category and amount'
+      # end
     end
   end
 
@@ -22,6 +26,12 @@ module ExpenseHelper
   end
 
   def find_all_expenses_for_user(username)
+    current_user = User.find_by_username(username)
+    expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
+    reply_with :message, text: expenses
+  end
+
+  def find_current_week_expenses_for_user(username)
     current_user = User.find_by_username(username)
     expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
     reply_with :message, text: expenses
