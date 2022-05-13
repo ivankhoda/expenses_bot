@@ -30,6 +30,9 @@ gem "jbuilder"
 # Add telegram bot
 gem 'telegram-bot'
 
+# Add figaro for managing env
+gem "figaro"
+
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
 
