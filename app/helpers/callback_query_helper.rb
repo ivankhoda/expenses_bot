@@ -24,11 +24,11 @@ module CallbackQueryHelper
         ]
       }
     when 'week_stats'
-      reply_with :message, text: 'week stats'
+      find_expenses_for(username, 'week')
     when 'month_stats'
-      reply_with :message, text: 'month stats'
+      find_expenses_for(username, 'month')
     when 'year_stats'
-      reply_with :message, text: 'year stats'
+      find_expenses_for(username, 'year')
     else
       reply_with :message, text: 'Not found command'
     end

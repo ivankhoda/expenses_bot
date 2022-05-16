@@ -18,7 +18,7 @@ module ExpenseHelper
     expense = Expense.new(data)
     expense.user_id = user_id
     result_message = if expense.save
-                       'Expense was created succesfully'
+                       "Expense #{expense.id} for #{expense.category} category was created succesfully"
                      else
                        'Expanse was not created'
                      end
@@ -31,13 +31,37 @@ module ExpenseHelper
     reply_with :message, text: expenses
   end
 
-  def find_current_week_expenses_for_user(username)
+  def find_expenses_for(username, time)
     current_user = User.find_by_username(username)
-    expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
-    reply_with :message, text: expenses
+    if current_user
+      expenses = current_user.expenses.where('created_at >= ?', (period_of time)).group_by(&:category).sort_by do
+        'category'
+      end
+    end
+    message = group_expenses expenses
+    reply_with :message, text: message
   end
 
-  def validate
-    puts params
+  def period_of(time)
+    case time
+    when 'week'
+      Date.today.at_beginning_of_week
+    when 'month'
+      Date.today.at_beginning_of_month
+    when 'year'
+      Date.today.at_beginning_of_year
+    end
+  end
+
+  def group_expenses(expenses)
+    message = ''
+    expenses.each do |categories|
+      expenses = 0
+      categories[1].each do |expense|
+        expenses += expense[:amount]
+      end
+      message = "#{message}#{categories[0]}: #{expenses}\n"
+    end
+    message
   end
 end
