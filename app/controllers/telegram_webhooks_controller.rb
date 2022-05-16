@@ -31,4 +31,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     username = user_name update
     callback_query_answer_handler(data, username)
   end
+
+  def keyboard!(_value = nil, *)
+    respond_with :message, text: 'hello', reply_markup: {
+      keyboard: [%w[start]]
+    }
+  end
 end
