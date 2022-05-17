@@ -22,6 +22,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
           { text: 'Registration', callback_data: 'registration' },
           { text: 'Log expenses', callback_data: 'log_expenses' },
           { text: 'Statistics', callback_data: 'statistics' }
+        ],
+        [
+          { text: 'Find expenses', callback_data: 'find_expenses' }
         ]
       ]
     }
@@ -30,11 +33,5 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def callback_query(data)
     username = user_name update
     callback_query_answer_handler(data, username)
-  end
-
-  def keyboard!(_value = nil, *)
-    respond_with :message, text: 'hello', reply_markup: {
-      keyboard: [%w[start]]
-    }
   end
 end

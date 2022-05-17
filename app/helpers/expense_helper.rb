@@ -55,13 +55,15 @@ module ExpenseHelper
 
   def group_expenses(expenses)
     message = ''
+    total_expenses = 0
     expenses.each do |categories|
       expenses = 0
       categories[1].each do |expense|
         expenses += expense[:amount]
+        total_expenses += expenses
       end
       message = "#{message}#{categories[0]}: #{expenses}\n"
     end
-    message
+    message + "Total expenses for period:#{total_expenses}"
   end
 end
