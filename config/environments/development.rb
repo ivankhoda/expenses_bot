@@ -68,6 +68,8 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
   config.hosts << /[a-z0-9-]+\.ngrok\.io/
+  routes.default_url_options = { host: ENV['test_url'], protocol: 'https' }
+  config.web_console.whitelisted_ips = '91.108.6.159'
   Telegram.bots_config = {
     default: ENV['test_token'],
     chat: {
