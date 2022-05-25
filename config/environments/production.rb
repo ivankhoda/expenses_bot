@@ -98,5 +98,4 @@ Rails.application.configure do
       username: ENV['username']
     }
   }
-  routes.default_url_options = { host: ENV['url'], protocol: 'https' }
 end
