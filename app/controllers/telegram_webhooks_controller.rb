@@ -8,12 +8,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # Define method with the same name to handle this type of update.
   def message(message)
     username = user_name message
-    expense_data = parse_message(message['text'])
-    puts expense_data.is_a? Hash
-    if user_exist(username) && expense_data.is_a?(Hash)
-      create_expense(parse_message(message['text']), current_user(username).id)
+    info = parse_message(message['text'])
+
+    if user_exist(username) && info.is_a?(Hash)
+      create_expense(info, current_user(username).id)
     else
-      respond_with :message, text: 'Sorry, seems that you have to register first'
+      respond_with :message, text: info
     end
   end
 
@@ -26,7 +26,19 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
           { text: 'Statistics', callback_data: 'statistics' }
         ],
         [
-          { text: 'Find expenses', callback_data: 'find_expenses' }
+          { text: 'Find expenses', callback_data: 'find_expenses' },
+          { text: 'App1', web_app: { url: ENV['webapp_url'] } }
+        ]
+      ]
+    }
+  end
+
+  def keyboard!(_word = nil, *_other_words)
+    reply_with :message, text: 'Welcome to Expenses bot, please select item...', reply_markup: {
+
+      keyboard: [
+        [
+          { text: 'App2', web_app: { url: ENV['webapp_url'] } }
         ]
       ]
     }
