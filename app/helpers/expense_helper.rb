@@ -9,7 +9,7 @@ module ExpenseHelper
       # begin
       #   raise StandardError, 'Please enter category and amount'
       #   resque
-      'Please enter category and amount'
+      respond_with :message, text: 'Please enter category and amount'
       # end
     end
   end
