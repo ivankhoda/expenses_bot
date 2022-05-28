@@ -7,10 +7,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
   def message(message)
-    username = user_name message
-    info = parse_message(message['text'])
+    username = update[:message][:from][:username]
+    info = parse_message(message[:text])
 
-    if user_exist(username) && info.is_a?(Hash)
+    if !User.find_by_username(username).nil? && info.is_a?(Hash)
       create_expense(info, current_user(username).id)
     else
       respond_with :message, text: info
@@ -33,7 +33,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     }
   end
 
-  def keyboard!(_word = nil, *_other_words)
+  def keyboard!(_word = 'nil', *_other_words)
     reply_with :message, text: 'Welcome to Expenses bot, please select item...', reply_markup: {
 
       keyboard: [
@@ -45,7 +45,17 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def callback_query(data)
-    username = user_name update
+    username = update[:callback_query][:from][:username]
     callback_query_answer_handler(data, username)
+  end
+
+  private
+
+  def telegram_webhook_controller_params
+    puts update[:message][:from][:username], 'from username mes>>>'
+    puts update[:message][:chat][:username], 'username mes>>>'
+    puts update[:message][:text], 'text mes>>>'
+    puts update['message'].class
+    puts update[:message], 'message username'
   end
 end
