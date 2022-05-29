@@ -11,7 +11,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     info = parse_message(message[:text])
 
     if !User.find_by_username(username).nil? && info.is_a?(Hash)
-      create_expense(info, current_user(username).id)
+      Expense.create(info, current_user(username).id)
     else
       respond_with :message, text: info
     end

@@ -19,9 +19,9 @@ class ExpenseController < ApplicationController
   def create
     @expense = Expense.new(expense_params)
     if @expense.save
-      'Expense created'
+      respond_with :message, text: "Expense #{expense.id} for #{expense.category} category was created succesfully"
     else
-      'Expense was not created'
+      respond_with :message, text: 'Expense was not created'
     end
   end
 
