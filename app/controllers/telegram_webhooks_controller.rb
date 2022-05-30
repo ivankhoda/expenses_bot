@@ -9,9 +9,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def message(message)
     username = update[:message][:from][:username]
     info = parse_message(message[:text])
-
     if !User.find_by_username(username).nil? && info.is_a?(Hash)
-      Expense.create(info, current_user(username).id)
+      expense = Expense.create({ category: info[:category], amount: info[:amount],
+                                 user_id: User.find_by_username(username).id })
+      respond_with :message, text: expense.to_json
     else
       respond_with :message, text: info
     end

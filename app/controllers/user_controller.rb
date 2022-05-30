@@ -16,6 +16,10 @@ class UserController < ApplicationController
     User.find_by_username(username: user_params[:username])
   end
 
+  def current_user(username)
+    User.find_by_username(username)
+  end
+
   private
 
   def user_params
