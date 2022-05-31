@@ -4,10 +4,6 @@ class ExpenseController < ApplicationController
   end
 
   def index
-    puts request.query_parameters
-
-    expenses = current_user.expenses.order(created_at: :desc)
-
     render json: { expences: }
   end
 
@@ -16,24 +12,19 @@ class ExpenseController < ApplicationController
     render json: { expense: }
   end
 
-  def create
+  def create(expense_params)
     @expense = Expense.new(expense_params)
     if @expense.save
-      'Expense created'
+      "Expense #{expense.id} for #{expense.category} category was created succesfully"
     else
       'Expense was not created'
     end
-  end
-
-  def show
-    task = current_user.tasks.find_by(id: params[:id])
-    render json: { task: }
   end
 
   private
 
   def expense_params
     puts params, 'parameteres'
-    params.require(:expense).permit(:category, :amount, :user_id)
+    params.require(:message).permit(:category, :amount, :user_id)
   end
 end

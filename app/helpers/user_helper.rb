@@ -25,8 +25,4 @@ module UserHelper
   def user_already_registered
     reply_with :message, text: 'You already registered in bot'
   end
-
-  def current_user(username)
-    User.find_by_username(username)
-  end
 end
