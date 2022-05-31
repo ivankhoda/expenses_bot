@@ -4,8 +4,6 @@ class ExpenseController < ApplicationController
   end
 
   def index
-    puts request.query_parameters
-
     render json: { expences: }
   end
 

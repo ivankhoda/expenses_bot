@@ -1,23 +1,14 @@
 module ExpenseHelper
   def parse_message(message)
-    amount = message.tr('^0-9', '').strip
-    category = message.tr('0-9', '').strip
-    if !amount.blank? && !category.blank?
-      category.chars[0].upcase!
-      { category:, amount: }
-    else
-      # begin
-      #   raise StandardError, 'Please enter category and amount'
-      #   resque
-      'Please enter category and amount'
-      # end
-    end
-  end
-
-  def find_all_expenses_for_user(username)
-    current_user = User.find_by_username(username)
-    expenses = current_user.expenses.group_by(&:category).sort_by { 'category' } if current_user
-    reply_with :message, text: expenses
+    p message
+    # amount = message.tr('^0-9', '').strip
+    # category = message.tr('0-9', '').strip
+    # if !amount.blank? && !category.blank?
+    #   category.chars[0].upcase!
+    #   { category:, amount: }
+    # else
+    #   'Please enter category and amount'
+    # end
   end
 
   def find_expenses_for(username, time)
@@ -27,7 +18,7 @@ module ExpenseHelper
         'category'
       end
     end
-    message = group_expenses expenses
+    message = group_expenses(expenses, time)
     reply_with :message, text: message
   end
 
@@ -42,17 +33,17 @@ module ExpenseHelper
     end
   end
 
-  def group_expenses(expenses)
+  def group_expenses(expenses, time)
     message = ''
     total_expenses = 0
     expenses.each do |categories|
-      expenses = 0
+      category_expenses = 0
       categories[1].each do |expense|
-        expenses += expense[:amount]
-        total_expenses += expenses
+        category_expenses += expense[:amount]
+        total_expenses += expense.amount
       end
-      message = "#{message}#{categories[0]}: #{expenses}\n"
+      message += "#{categories[0]}: #{category_expenses}\n"
     end
-    message + "Total expenses for period:#{total_expenses}"
+    message + "From #{period_of(time)}, to #{Date.today}\n" + "Total expenses:#{total_expenses}"
   end
 end
