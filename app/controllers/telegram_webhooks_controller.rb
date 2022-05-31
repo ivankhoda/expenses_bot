@@ -10,7 +10,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def message(message)
     p message, 'messaga'
     p update, 'upd'
-
     # username = update[:message][:from][:username]
     # info = parse_message(message[:text])
     # if !User.find_by_username(username).nil? && info.is_a?(Hash)
@@ -23,15 +22,5 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     # else
     respond_with :message, text: message
     # end
-  end
-
-  private
-
-  def telegram_webhook_controller_params
-    puts update[:message][:from][:username], 'from username mes>>>'
-    puts update[:message][:chat][:username], 'username mes>>>'
-    puts update[:message][:text], 'text mes>>>'
-    puts update['message'].class
-    puts update[:message], 'message username'
   end
 end

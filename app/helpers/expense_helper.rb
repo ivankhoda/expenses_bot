@@ -1,5 +1,6 @@
 module ExpenseHelper
   def parse_message(message)
+
     p message
     # amount = message.tr('^0-9', '').strip
     # category = message.tr('0-9', '').strip
@@ -9,6 +10,7 @@ module ExpenseHelper
     # else
     #   'Please enter category and amount'
     # end
+    
   end
 
   def find_expenses_for(username, time)

@@ -6,9 +6,9 @@ class UserController < ApplicationController
   def create(user_params)
     @user = User.new(user_params)
     if @user.save
-      respond_with :message, text: 'You succesfully registred'
+      render json: { message: 'You succesfully registred' }
     else
-      @user.errors.messages
+      render json: { error: @user.errors.messages }
     end
   end
 
@@ -23,6 +23,7 @@ class UserController < ApplicationController
   private
 
   def user_params
-    params.require(:message).permit(:username)
+    puts params, 'parameteres'
+    params.require(:user).permit(:username)
   end
 end
