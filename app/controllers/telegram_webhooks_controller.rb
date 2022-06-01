@@ -10,7 +10,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def message(message)
     p message, 'messaga'
     p update, 'upd'
-
     # username = update[:message][:from][:username]
     # info = parse_message(message[:text])
     # if !User.find_by_username(username).nil? && info.is_a?(Hash)
