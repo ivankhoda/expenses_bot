@@ -25,6 +25,22 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     # end
   end
 
+  def web_app_message(web_app_data)
+    p web_app_data, 'web_app_data'
+    # username = update[:message][:from][:username]
+    # info = parse_message(message[:text])
+    # if !User.find_by_username(username).nil? && info.is_a?(Hash)
+    #   expense = Expense.create({ category: info[:category], amount: info[:amount],
+    #                              user_id: User.find_by_username(username).id })
+    #   if expense.id
+    #     respond_with :message,
+    #                  text: "Expense #{expense.id} for #{expense.category} category was created succesfully"
+    #   end
+    # else
+    respond_with :message, text: message
+    # end
+  end
+
   private
 
   def telegram_webhook_controller_params

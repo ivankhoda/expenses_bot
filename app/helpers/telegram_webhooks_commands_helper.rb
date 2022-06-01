@@ -41,7 +41,7 @@ module TelegramWebhooksCommandsHelper
 
       keyboard: [
         [
-          { text: 'App2', one_time_keyboard: true, web_app: { url: ENV['webapp_url'] } }
+          { text: 'App2', web_app: { url: ENV['webapp_url'] } }
         ]
       ]
     }
