@@ -14,10 +14,6 @@ module TelegramWebhooksCommandsHelper
         ],
         [
           { text: 'App2', one_time_keyboard: true, web_app: { url: ENV['webapp_url'] } }
-        ],
-        [
-          # { text: 'Find expenses', callback_data: 'find_expenses' },
-          # { text: 'App1', web_app: { url: ENV['webapp_url'] } }
         ]
       ]
     }
@@ -47,8 +43,10 @@ module TelegramWebhooksCommandsHelper
     }
   end
 
-  def callback_query(data)
-    username = update[:callback_query][:from][:username]
-    callback_query_answer_handler(data, username)
+  def callback_query(_data)
+    upd = HashWithIndifferentAccess.new(update)
+    username = upd[:callback_query][:from][:username]
+    # callback_query_answer_handler(data, username)
+    respond_with :message, text: upd
   end
 end

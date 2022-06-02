@@ -1,14 +1,13 @@
 module ExpenseHelper
   def parse_message(message)
-    p message
-    # amount = message.tr('^0-9', '').strip
-    # category = message.tr('0-9', '').strip
-    # if !amount.blank? && !category.blank?
-    #   category.chars[0].upcase!
-    #   { category:, amount: }
-    # else
-    #   'Please enter category and amount'
-    # end
+    amount = message.tr('^0-9', '').strip
+    category = message.tr('0-9', '').strip
+    if !amount.blank? && !category.blank?
+      category.chars[0].upcase!
+      { category:, amount: }
+    else
+      'Please enter category and amount'
+    end
   end
 
   def find_expenses_for(username, time)
