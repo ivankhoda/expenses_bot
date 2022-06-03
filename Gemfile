@@ -29,12 +29,15 @@ gem "jbuilder"
 
 # Add telegram bot
 gem 'telegram-bot'
+gem 'telegram-bot-types'
 
 # Add figaro for managing env
 gem "figaro"
 
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
+gem 'redis-store'
+gem 'redis-rails'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"

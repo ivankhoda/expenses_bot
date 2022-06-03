@@ -1,26 +1,33 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
-  include UserHelper
   include ExpenseHelper
   include CallbackQueryHelper
   include TelegramWebhooksCommandsHelper
-
+  # include Telegram::Bot::UpdatesController::TypedUpdate
+  include Telegram::Bot::UpdatesController::MessageContext
+  use_session!
   # Every update has one of: message, inline_query, chosen_inline_result,
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
   def message(message)
-    p message, 'messaga'
-    p update, 'upd'
-    # username = update[:message][:from][:username]
-    # info = parse_message(message[:text])
-    # if !User.find_by_username(username).nil? && info.is_a?(Hash)
-    #   expense = Expense.create({ category: info[:category], amount: info[:amount],
-    #                              user_id: User.find_by_username(username).id })
-    #   if expense.id
-    #     respond_with :message,
-    #                  text: "Expense #{expense.id} for #{expense.category} category was created succesfully"
-    #   end
-    # else
-    respond_with :message, text: message
-    # end
+    upd = HashWithIndifferentAccess.new(message)
+    expense = Expense.new
+    reply = expense.record(upd)
+
+    respond_with :message, text: reply
+  end
+
+  def clean!
+    session.delete(session.keys.last)
+  end
+
+  def put!(*args)
+    session[:useful_info] = args.join(' ')
+    respond_with :message, text: session[:useful_info]
+  end
+
+  private
+
+  def session_key
+    "#{bot.username}:#{chat['id']}:#{from['id']}" if chat && from
   end
 end
