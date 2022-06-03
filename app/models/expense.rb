@@ -1,9 +1,19 @@
 class Expense < ApplicationRecord
   belongs_to :user
+  include ExpenseHelper
 
-  def validate(message)
-    to_valid = message
-    p to_valid, 'to valid from class'
+  def record(message)
+    data = message[:text]
+    user_id = User.find_by_username(message[:from][:username]).id
+    category = data.tr('0-9', '').strip
+    amount = data.tr('^0-9', '').strip
+    if !amount.blank? && !category.blank?
+      category.chars[0].upcase!
+      expense = Expense.create({ category:, amount:, user_id: })
+      "Expense #{expense.id} for #{expense.category} category was created succesfully"
+    else
+      "Please enter category and amount, you entered only #{amount.blank? ? 'category' : 'amount'}."
+    end
   end
 
   def find_expenses_for(username, time)
@@ -13,8 +23,7 @@ class Expense < ApplicationRecord
         'category'
       end
     end
-    message = group_expenses(expenses, time)
-    reply_with :message, text: message
+    group_expenses(expenses, time)
   end
 
   def group_expenses(expenses, time)

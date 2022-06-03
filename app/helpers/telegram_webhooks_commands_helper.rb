@@ -43,10 +43,9 @@ module TelegramWebhooksCommandsHelper
     }
   end
 
-  def callback_query(_data)
+  def callback_query(data)
     upd = HashWithIndifferentAccess.new(update)
     username = upd[:callback_query][:from][:username]
-    # callback_query_answer_handler(data, username)
-    respond_with :message, text: upd
+    callback_query_answer_handler(data, username)
   end
 end

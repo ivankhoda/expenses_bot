@@ -1,13 +1,17 @@
 module CallbackQueryHelper
+  include UserHelper
   def callback_query_answer_handler(data, username)
+    @expense = Expense.new
     case data
     when 'log_expenses'
       if !User.find_by_username(username).nil?
+
         reply_with :message, text: 'Enter category of your expense and amount'
       else
         respond_with :message, text: 'Sorry, seems that you have to register first'
       end
     when 'registration'
+
       if !User.find_by_username(username).nil?
         user_already_registered
       else
@@ -24,11 +28,11 @@ module CallbackQueryHelper
         ]
       }
     when 'week_stats'
-      find_expenses_for(username, 'week')
+      reply_with :message, text: @expense.find_expenses_for(username, 'week')
     when 'month_stats'
-      find_expenses_for(username, 'month')
+      reply_with :message, text: @expense.find_expenses_for(username, 'month')
     when 'year_stats'
-      find_expenses_for(username, 'year')
+      reply_with :message, text: @expense.find_expenses_for(username, 'year')
     else
       reply_with :message, text: 'Not found command'
     end
