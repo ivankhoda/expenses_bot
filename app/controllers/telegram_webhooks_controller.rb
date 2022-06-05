@@ -1,3 +1,9 @@
+require 'barby'
+require 'barby/barcode/code_128'
+require 'barby/outputter/ascii_outputter'
+
+require 'barby/outputter/png_outputter'
+
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include ExpenseHelper
   include CallbackQueryHelper
@@ -23,6 +29,23 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def put!(*args)
     session[:useful_info] = args.join(' ')
     respond_with :message, text: session[:useful_info]
+  end
+
+  def code!(*num)
+    # some image
+
+    # ph = File.open('/Users/ivan/websites/expenses_bot/barcode.svg')
+    # barcode
+    image_name = SecureRandom.hex
+    barcode = Barby::Code128B.new(num[0])
+    png = Barby::PngOutputter.new(barcode).to_png
+    # p barcode
+    photo = File.open('barcode.png', 'wb') { |f| f.write barcode.to_png }
+    # photo = File.write('barcode2.png', png.to_s)
+    # p photo
+    IO.binwrite("tmp/#{image_name}.png", png.to_s)
+
+    respond_with :photo, photo: barcode
   end
 
   private
