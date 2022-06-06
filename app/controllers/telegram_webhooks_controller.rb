@@ -38,14 +38,28 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     # barcode
     image_name = SecureRandom.hex
     barcode = Barby::Code128B.new(num[0])
-    png = Barby::PngOutputter.new(barcode).to_png
+    png = Barby::PngOutputter.new(barcode).to_png(xdim: 2, ydim: 1)
+
     # p barcode
-    photo = File.open('barcode.png', 'wb') { |f| f.write barcode.to_png }
     # photo = File.write('barcode2.png', png.to_s)
     # p photo
-    IO.binwrite("tmp/#{image_name}.png", png.to_s)
+    # IO.binwrite("tmp/#{image_name}.png", png.to_s)
+    IO.binwrite('tmp/barcode.png', png.to_s)
+    photo = File.open('tmp/barcode.png')
 
-    respond_with :photo, photo: barcode
+    respond_with :photo, photo: photo
+  end
+
+  def code13!(*_num)
+    require 'barby/barcode/ean_13'
+    num = '123456789009'
+    barcode = Barby::EAN13.new(num)
+    p barcode
+    png = Barby::PngOutputter.new(barcode).to_png(xdim: 2, ydim: 1)
+    IO.binwrite('tmp/EANbarcode.png', png.to_s)
+    photo = File.open('tmp/EANbarcode.png')
+
+    respond_with :photo, photo: photo
   end
 
   private
