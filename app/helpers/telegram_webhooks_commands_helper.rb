@@ -33,7 +33,7 @@ module TelegramWebhooksCommandsHelper
   end
 
   def keyboard!(_word = 'nil', *_other_words)
-    reply_with :message, text: 'Welcome to Expenses bot, please select item...', reply_markup: {
+    reply_with :message, text: 'Welcome to Expenses bot webApp', reply_markup: {
 
       keyboard: [
         [

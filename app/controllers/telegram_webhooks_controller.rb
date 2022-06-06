@@ -1,9 +1,3 @@
-require 'barby'
-require 'barby/barcode/code_128'
-require 'barby/outputter/ascii_outputter'
-
-require 'barby/outputter/png_outputter'
-
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include ExpenseHelper
   include CallbackQueryHelper
@@ -20,15 +14,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     reply = expense.record(upd)
 
     respond_with :message, text: reply
-  end
-
-  def clean!
-    session.delete(session.keys.last)
-  end
-
-  def put!(*args)
-    session[:useful_info] = args.join(' ')
-    respond_with :message, text: session[:useful_info]
   end
 
   private

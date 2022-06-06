@@ -10,7 +10,7 @@ class Expense < ApplicationRecord
     if !amount.blank? && !category.blank?
       category.chars[0].upcase!
       expense = Expense.create({ category:, amount:, user_id: })
-      "Expense #{expense.id} for #{expense.category} category was created succesfully"
+      "Expense № #{expense.id} for #{expense.category} category was created succesfully"
     else
       "Please enter category and amount, you entered only #{amount.blank? ? 'category' : 'amount'}."
     end

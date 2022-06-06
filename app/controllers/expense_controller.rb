@@ -24,7 +24,6 @@ class ExpenseController < ApplicationController
   private
 
   def expense_params
-    puts params, 'parameteres'
     params.require(:message).permit(:category, :amount, :user_id)
   end
 end
