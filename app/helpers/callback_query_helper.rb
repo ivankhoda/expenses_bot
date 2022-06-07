@@ -5,18 +5,18 @@ module CallbackQueryHelper
     case data
     when 'log_expenses'
       if !User.find_by_username(username).nil?
-
         reply_with :message, text: 'Enter category of your expense and amount'
       else
         respond_with :message, text: 'Sorry, seems that you have to register first'
       end
-    when 'registration'
 
+    when 'registration'
       if !User.find_by_username(username).nil?
         user_already_registered
       else
         User.create({ username: })
       end
+
     when 'statistics'
       reply_with :message, text: 'Please select period', reply_markup: {
         inline_keyboard: [
@@ -33,6 +33,12 @@ module CallbackQueryHelper
       reply_with :message, text: @expense.find_expenses_for(username, 'month')
     when 'year_stats'
       reply_with :message, text: @expense.find_expenses_for(username, 'year')
+
+    when 'download_all_expenses'
+      data = @expense.find_all(username)
+
+      reply_with :document, document: data
+
     else
       reply_with :message, text: 'Not found command'
     end

@@ -26,6 +26,23 @@ class Expense < ApplicationRecord
     group_expenses(expenses, time)
   end
 
+  def find_all(username)
+    require 'axlsx'
+    current_user = User.find_by_username(username)
+    expenses = current_user.expenses.find_all if current_user
+    p = Axlsx::Package.new
+    p.workbook do |wb|
+      wb.add_worksheet(name: 'Items') do |sheet|
+        sheet.add_row %w[Number Date Category Amount]
+        expenses.each do |expense|
+          sheet.add_row [expense.id, expense.created_at, expense.category, expense.amount]
+        end
+      end
+    end
+    p.serialize 'tmp/index.xlsx'
+    data = File.open('/Users/ivan/websites/expenses_bot/tmp/index.xlsx')
+  end
+
   def group_expenses(expenses, time)
     message = ''
     total_expenses = 0
