@@ -40,7 +40,27 @@ class Expense < ApplicationRecord
       end
     end
     p.serialize 'tmp/index.xlsx'
-    data = File.open('/Users/ivan/websites/expenses_bot/tmp/index.xlsx')
+    File.open('/Users/ivan/websites/expenses_bot/tmp/index.xlsx')
+  end
+
+  def find_all_created_at(username, date)
+    current_user = User.find_by_username(username)
+    if current_user
+      expenses = current_user.expenses.where('created_at BETWEEN ? AND ?', date.beginning_of_day, date.end_of_day).to_a
+    end
+    expenses
+  end
+
+  def find_by_id(username, id)
+    current_user = User.find_by_username(username)
+    expenses = current_user.expenses.where('id = ?', id).to_a if current_user
+    expenses
+  end
+
+  def find_and_delete(username, id)
+    current_user = User.find_by_username(username)
+    current_user.expenses.find(id).destroy if current_user
+    'deleted'
   end
 
   def group_expenses(expenses, time)

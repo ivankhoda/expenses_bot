@@ -47,10 +47,11 @@ module TelegramWebhooksCommandsHelper
       inline_keyboard: [
         [
           { text: 'Download all', callback_data: 'download_all_expenses' },
-          { text: 'Find by date', callback_data: 'find_by_date' },
-          { text: 'Find by expense number', callback_data: 'find_by_number' },
-          { text: 'Import data', callback_data: 'import_data' }
-        ]
+          { text: 'Find by date', callback_data: 'find_by_date' }
+
+        ],
+        [{ text: 'Find by expense id', callback_data: 'find_by_id' },
+         { text: 'Import data', callback_data: 'import_data' }]
       ]
     }
   end
