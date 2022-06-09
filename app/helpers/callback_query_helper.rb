@@ -51,6 +51,7 @@ module CallbackQueryHelper
 
     when 'update_expense'
       save_context :update_expense
+
       respond_with :message, text: 'Please input new data for expense (category and/or amount)'
     else
 
