@@ -43,15 +43,14 @@ module CallbackQueryHelper
     when 'find_by_id'
       save_context :select_expense_by_id
       respond_with :message, text: 'Please enter id of expense'
-
     when 'delete_expense'
       username = callback_query_username(update)
       expense_id = callback_query_message(update)
-      @expense.find_and_delete(username, expense_id)
+      data = @expense.find_and_delete(username, expense_id)
+      respond_with :message, text: data
 
     when 'update_expense'
       save_context :update_expense
-
       respond_with :message, text: 'Please input new data for expense (category and/or amount)'
     else
 

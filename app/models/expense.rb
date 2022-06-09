@@ -59,8 +59,12 @@ class Expense < ApplicationRecord
 
   def find_and_delete(username, id)
     current_user = User.find_by_username(username)
-    current_user.expenses.find(id).destroy if current_user
-    'deleted'
+    if !find_by_id(username, id).empty?
+      current_user.expenses.find(id).destroy
+      "Expense with #{id} was successfully deleted"
+    else
+      "Seems you dont have #{id} expense"
+    end
   end
 
   def group_expenses(expenses, time)
@@ -72,7 +76,7 @@ class Expense < ApplicationRecord
         category_expenses += expense[:amount]
         total_expenses += expense.amount
       end
-      message += "#{categories[0]}: #{category_expenses}\n"
+      message += " # {categories[0]}: #{category_expenses}\n"
     end
     message + "From #{period_of(time)}, to #{Date.today}\n" + "Total expenses:#{total_expenses}"
   end
