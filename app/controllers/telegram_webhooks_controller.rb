@@ -46,15 +46,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         inline_keyboard: [
           [
             { text: 'Delete', callback_data: 'delete_expense' },
-            { text: 'Update', callback_data: 'update_expense' }
+            { text: 'Nothing', callback_data: 'do_nothing' }
           ]
         ]
       }
     end
-  end
-
-  def update_expense(*args)
-    p args.join(' ')
   end
 
   private

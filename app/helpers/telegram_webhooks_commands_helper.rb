@@ -59,7 +59,7 @@ module TelegramWebhooksCommandsHelper
   def me!(_word = 'nil', *_other_words)
     reply_with :message, text: 'Expenses bot web App', reply_markup: {
 
-      keyboard: [
+      inline_keyboard: [
         [
           { text: 'View my info', callback_data: 'view_user_info' },
           { text: 'Delete all my data', callback_data: 'find_by_date' }

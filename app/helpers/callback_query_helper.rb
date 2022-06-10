@@ -49,12 +49,15 @@ module CallbackQueryHelper
       data = @expense.find_and_delete(username, expense_id)
       respond_with :message, text: data
 
-    when 'update_expense'
-      save_context :update_expense
+    when 'do_nothing'
 
-      respond_with :message, text: 'Please input new data for expense (category and/or amount)'
+      respond_with :message, text: 'Sure'
+
+    when 'view_user_info'
+      username = callback_query_username(update)
+      user = User.find_by_username(username)
+      respond_with :message, text: "ID: #{user[:id]}, Username: #{user[:username]}"
     else
-
       reply_with :message, text: 'Not found command'
     end
   end
