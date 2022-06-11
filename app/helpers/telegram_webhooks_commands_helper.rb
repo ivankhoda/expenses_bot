@@ -11,9 +11,6 @@ module TelegramWebhooksCommandsHelper
           { text: 'Registration', callback_data: 'registration' },
           { text: 'Log expenses', callback_data: 'log_expenses' },
           { text: 'Statistics', callback_data: 'statistics' }
-        ],
-        [
-          { text: 'App2', one_time_keyboard: true, web_app: { url: ENV['webapp_url'] } }
         ]
       ]
     }
@@ -32,15 +29,52 @@ module TelegramWebhooksCommandsHelper
     }
   end
 
-  def keyboard!(_word = 'nil', *_other_words)
-    reply_with :message, text: 'Welcome to Expenses bot webApp', reply_markup: {
+  def app!(_word = 'nil', *_other_words)
+    reply_with :message, text: 'Expenses bot web App', reply_markup: {
 
       keyboard: [
         [
-          { text: 'App2', web_app: { url: ENV['webapp_url'] } }
+          { text: 'WebApp', web_app: { url: ENV['webapp_url'] } }
         ]
       ]
     }
+  end
+
+  def expenses!(_word = 'nil', *_other_words)
+    reply_with :message, text: 'Expenses bot web App', reply_markup: {
+
+      inline_keyboard: [
+        [
+          { text: 'Download all', callback_data: 'download_all_expenses' },
+          { text: 'Find by date', callback_data: 'find_by_date' }
+
+        ],
+        [{ text: 'Find by expense id', callback_data: 'find_by_id' }]
+      ]
+    }
+  end
+
+  def me!(_word = 'nil', *_other_words)
+    if !User.find_by_username(username).nil?
+      reply_with :message, text: 'Expenses bot user information', reply_markup: {
+        inline_keyboard: [
+          [
+            { text: 'View my info', callback_data: 'view_user_info' },
+            { text: 'Delete all my data', callback_data: 'delete_user_info' }
+
+          ]
+        ]
+      }
+    else
+      respond_with :message, text: 'We dont know you..'
+      respond_with :message, text: 'Try to reg first', reply_markup: {
+        inline_keyboard: [
+          [
+            { text: 'Registration', callback_data: 'registration' }
+          ]
+        ]
+      }
+    end
   end
 
   def callback_query(data)
