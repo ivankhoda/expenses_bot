@@ -76,7 +76,7 @@ class Expense < ApplicationRecord
         category_expenses += expense[:amount]
         total_expenses += expense.amount
       end
-      message += " # {categories[0]}: #{category_expenses}\n"
+      message += " #{categories[0]}: #{category_expenses}\n"
     end
     message + "From #{period_of(time)}, to #{Date.today}\n" + "Total expenses:#{total_expenses}"
   end

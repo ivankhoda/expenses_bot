@@ -40,7 +40,6 @@ module TelegramWebhooksCommandsHelper
     }
   end
 
-  # New options
   def expenses!(_word = 'nil', *_other_words)
     reply_with :message, text: 'Expenses bot web App', reply_markup: {
 
@@ -50,23 +49,32 @@ module TelegramWebhooksCommandsHelper
           { text: 'Find by date', callback_data: 'find_by_date' }
 
         ],
-        [{ text: 'Find by expense id', callback_data: 'find_by_id' },
-         { text: 'Import data', callback_data: 'import_data' }]
+        [{ text: 'Find by expense id', callback_data: 'find_by_id' }]
       ]
     }
   end
 
   def me!(_word = 'nil', *_other_words)
-    reply_with :message, text: 'Expenses bot web App', reply_markup: {
+    if !User.find_by_username(username).nil?
+      reply_with :message, text: 'Expenses bot user information', reply_markup: {
+        inline_keyboard: [
+          [
+            { text: 'View my info', callback_data: 'view_user_info' },
+            { text: 'Delete all my data', callback_data: 'delete_user_info' }
 
-      inline_keyboard: [
-        [
-          { text: 'View my info', callback_data: 'view_user_info' },
-          { text: 'Delete all my data', callback_data: 'find_by_date' }
-
+          ]
         ]
-      ]
-    }
+      }
+    else
+      respond_with :message, text: 'We dont know you..'
+      respond_with :message, text: 'Try to reg first', reply_markup: {
+        inline_keyboard: [
+          [
+            { text: 'Registration', callback_data: 'registration' }
+          ]
+        ]
+      }
+    end
   end
 
   def callback_query(data)

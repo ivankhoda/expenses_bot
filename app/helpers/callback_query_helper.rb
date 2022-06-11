@@ -15,8 +15,8 @@ module CallbackQueryHelper
         user_already_registered
       else
         User.create({ username: })
+        respond_with :message, text: "Congrats, you're in."
       end
-
     when 'statistics'
       reply_with :message, text: 'Please select period', reply_markup: {
         inline_keyboard: [
@@ -33,7 +33,6 @@ module CallbackQueryHelper
       reply_with :message, text: @expense.find_expenses_for(username, 'month')
     when 'year_stats'
       reply_with :message, text: @expense.find_expenses_for(username, 'year')
-
     when 'download_all_expenses'
       data = @expense.find_all(username)
       reply_with :document, document: data
@@ -48,15 +47,37 @@ module CallbackQueryHelper
       expense_id = callback_query_message(update)
       data = @expense.find_and_delete(username, expense_id)
       respond_with :message, text: data
-
     when 'do_nothing'
-
       respond_with :message, text: 'Sure'
-
     when 'view_user_info'
       username = callback_query_username(update)
       user = User.find_by_username(username)
-      respond_with :message, text: "ID: #{user[:id]}, Username: #{user[:username]}"
+      if !user.nil?
+        respond_with :message, text: "Your Username is #{user[:username]}"
+      else
+        respond_with :message, text: 'We dont know you..'
+      end
+    when 'delete_user_info'
+      save_context :delete_confirmation
+
+      reply_with :message, text: 'Are you sure?', reply_markup: {
+        inline_keyboard: [
+          [
+            { text: 'Yes, delete', callback_data: 'delete_expense_confirmed' },
+            { text: 'No, later', callback_data: 'do_nothing' }
+          ]
+        ]
+      }
+
+    when 'delete_expense_confirmed'
+      User.find_by_username(username).expenses.destroy_all
+      User.find_by_username(username).destroy
+      if User.find_by_username(username).nil?
+        respond_with :message, text: 'Your data was deleted'
+      else
+        respond_with :message, text: 'Something went wrong'
+      end
+
     else
       reply_with :message, text: 'Not found command'
     end

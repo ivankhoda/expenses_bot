@@ -9,19 +9,20 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # Define method with the same name to handle this type of update.
   def message(message)
     upd = HashWithIndifferentAccess.new(message)
-    expense = Expense.new
-    reply = expense.record(upd)
-
-    respond_with :message, text: reply
-  end
-
-  def clean!
-    session.delete(session.keys.last)
-  end
-
-  def put!(*args)
-    session[:useful_info] = args.join(' ')
-    respond_with :message, text: session[:useful_info]
+    if !User.find_by_username(username).nil?
+      expense = Expense.new
+      reply = expense.record(upd)
+      respond_with :message, text: reply
+    else
+      respond_with :message, text: 'We dont know you.'
+      respond_with :message, text: 'Try to reg first', reply_markup: {
+        inline_keyboard: [
+          [
+            { text: 'Registration', callback_data: 'registration' }
+          ]
+        ]
+      }
+    end
   end
 
   def select_expenses_by_date(date)
@@ -51,6 +52,18 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         ]
       }
     end
+  end
+
+  def delete_confirmation
+    respond_with :message, text: 'Are you sure?'
+    reply_with :message, text: 'Are you sure?', reply_markup: {
+      inline_keyboard: [
+        [
+          { text: 'Yes, delete', callback_data: 'delete_expense_confirmed' },
+          { text: 'No, later', callback_data: 'do_nothing' }
+        ]
+      ]
+    }
   end
 
   private
