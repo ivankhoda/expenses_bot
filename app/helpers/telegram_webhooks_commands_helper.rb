@@ -41,7 +41,7 @@ module TelegramWebhooksCommandsHelper
   end
 
   def expenses!(_word = 'nil', *_other_words)
-    reply_with :message, text: 'Expenses bot web App', reply_markup: {
+    reply_with :message, text: 'Expenses', reply_markup: {
 
       inline_keyboard: [
         [
